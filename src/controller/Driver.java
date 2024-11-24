@@ -8,8 +8,7 @@ import src.view.Top;
 
 public class Driver {
     public static void main(String[] args) {
-        System.out.println(Text.YELLOW + "# Simple Receipt System" + Text.RESET);
-        System.out.println(Text.YELLOW + "* by Justin Go, 2024" + Text.RESET);
+        System.out.println(Text.BLUE + "# Simple Receipt System by Justin Go, 2024" + Text.RESET);
         Shop shop = new Shop();
         Top top = new Top();
 
@@ -18,16 +17,11 @@ public class Driver {
 
         try {
             shop.connectToDatabase();
+            shop.loadItems();
         } catch (SQLException e) {
             System.out.print(Text.RED);
             System.out.println(e);
             System.out.print(Text.RESET);
-        }
-
-        try {
-            shop.loadItems();
-        } catch (SQLException e) {
-            System.out.println(Text.YELLOW + "`items` table does not exist." + Text.RESET);
         }
 
     }

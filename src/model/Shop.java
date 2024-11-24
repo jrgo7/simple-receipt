@@ -37,12 +37,25 @@ public class Shop {
      * Load Items data from the SQL database into the `items` ArrayList.
      */
     public void loadItems() throws SQLException {
-        Statement statement = connection.createStatement();
-        ResultSet itemEntries = statement.executeQuery("SELECT * FROM `items`");
-        while (itemEntries.next()) {
-            String name = itemEntries.getString("name");
-            BigDecimal price = new BigDecimal(itemEntries.getString("price"));
-            items.add(new Item(name, price));
+        try {
+            String query = "SELECT * FROM `items`";
+            Statement statement = connection.createStatement();
+            ResultSet itemEntries = statement.executeQuery(query);
+            while (itemEntries.next()) {
+                String name = itemEntries.getString("name");
+                BigDecimal price = new BigDecimal(itemEntries.getString("price"));
+                items.add(new Item(name, price));
+            }
+            statement.close();
+            itemEntries.close();
+        } catch (SQLException e) {
+            System.out.println(Text.YELLOW + "* Items table doesn't exist yet; creating..." + Text.RESET);
+            String query = """
+                    CREATE TABLE IF NOT EXISTS
+                        `items` (name TEXT PRIMARY KEY, price DECIMAL(9, 2))
+                    """;
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(query);
         }
     }
 
@@ -54,24 +67,28 @@ public class Shop {
         PreparedStatement statement = connection.prepareStatement(query);
         statement.setString(1, name);
         statement.setString(2, price.toString());
-        System.out.println(Text.BLUE + statement + Text.RESET);
+        System.out.println(Text.YELLOW + "> " + statement + Text.RESET);
         statement.executeUpdate();
-
-        Item item = new Item(name, price);
-        items.add(item);
+        items.add(new Item(name, price));
+        statement.close();
     }
+
 
     /**
-     * Get the names of each item in the database.
-     * 
-     * @return
+     * Get item data as a String matrix.
      */
-    public ArrayList<String> getItemNames() {
-        ArrayList<String> names = new ArrayList<>();
+    public String[][] getItemData() {
+        String[][] data = new String[items.size()][2];
+
+        int i = 0;
         for (Item item : items) {
-            names.add(item.name());
+            data[i][0] = item.name();
+            data[i][1] = item.price().toString();
+            i++;
         }
-        return names;
+
+        return data;
     }
+
 
 }

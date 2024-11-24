@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import src.model.Shop;
 import src.view.Text;
@@ -35,17 +36,32 @@ public class Listener implements ActionListener {
                 System.out.println(Text.RED + "* Action has no function." + Text.RESET);
                 return;
         }
-        System.out.println(Text.GREEN + "* Action finished." + Text.RESET);
     }
 
     public void listItems() {
-        top.dialogListItems(shop.getItemNames());
+        top.dialogListItems(shop.getItemData());
+        System.out.println(Text.GREEN + "* Action finished." + Text.RESET);
     }
 
     public void addItem() {
-        // top.dialogAddItem();
+        HashMap<String, String> data = top.dialogAddItem();
+        String name = data.get("name");
+        String price = data.get("price");
+
+        if (name == null && price == null) {
+            System.out.println(Text.YELLOW + "* Action cancelled." + Text.RESET);
+            return; // Cancelled
+        }
+
+        if (name.isEmpty() || price.isEmpty()) {
+            top.dialogFailure("Item add failure", "No name or price indicated.");
+            return;
+        }
+
         try {
-            shop.addItem("banana", new BigDecimal(120));
+            shop.addItem(name, new BigDecimal(price));
+            top.dialogSuccess("Item add success",
+                    String.format("Successfully added item %s!", name));
         } catch (SQLException e) {
             System.out.print(
                     Text.RED

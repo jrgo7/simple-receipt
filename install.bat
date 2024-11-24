@@ -1,1 +1,0 @@
-winget install search -q "SQLite.SQLite"

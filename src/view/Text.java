@@ -13,7 +13,7 @@ public class Text {
 
     // Menu items
     public static final String ITEMS = "Items";
-    public static final String LIST_ITEMS = "List items";
+    public static final String LIST_ITEMS = "List items (to be deprecated)";
     public static final String ADD_ITEM = "Add item";
     public static final String EDIT_ITEM = "Edit item";
     public static final String REMOVE_ITEM = "Remove item";
