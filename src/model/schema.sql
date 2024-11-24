@@ -1,0 +1,2 @@
+CREATE TABLE IF NOT EXISTS
+    `items` (name TEXT PRIMARY KEY, price DECIMAL(9, 2));
